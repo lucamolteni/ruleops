@@ -1,9 +1,9 @@
 name: RuleOps Quarkus Extension
-#description: Creates CLI for RuleOps
+#description: Generate the CLI for RuleOps rules
 metadata:
 #  keywords:
 #    - ruleops-extension
-#  guide: ... # To create and publish this guide, see https://github.com/quarkiverse/quarkiverse/wiki#documenting-your-extension
+#  guide: ...
 #  categories:
 #    - "miscellaneous"
 #  status: "preview"

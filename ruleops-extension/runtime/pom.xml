@@ -9,7 +9,7 @@
   </parent>
   <artifactId>ruleops-extension</artifactId>
   <name>RuleOps Quarkus Extension - Runtime</name>
-  <description>Creates CLI for RuleOps</description>
+  <description>Generate the CLI for RuleOps rules</description>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

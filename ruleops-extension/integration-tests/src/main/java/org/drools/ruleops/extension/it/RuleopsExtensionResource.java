@@ -16,9 +16,9 @@
 */
 package org.drools.ruleops.extension.it;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
+import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
 @Path("/ruleops-extension")
 @ApplicationScoped

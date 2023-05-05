@@ -1,5 +1,8 @@
 package org.drools.ruleops.extension.test;
 
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
@@ -16,8 +19,10 @@ public class RuleopsExtensionTest {
         .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class));
 
     @Test
-    public void writeYourOwnUnitTest() {
+    public void writeYourOwnUnitTest() throws ClassNotFoundException {
+
+        Instance<?> prova = CDI.current().select(Class.forName("org.drools.Prova"));
         // Write your unit tests here - see the testing extension guide https://quarkus.io/guides/writing-extensions#testing-extensions for more information
-        Assertions.assertTrue(true, "Add some assertions to " + getClass().getName());
+        Assertions.assertNotNull(prova);
     }
 }
