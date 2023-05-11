@@ -2,7 +2,6 @@ package org.drools.ruleops.extension.deployment;
 
 import javax.inject.Inject;
 
-import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -10,10 +9,8 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
-import io.quarkus.picocli.runtime.annotations.TopCommand;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.DotName;
-import picocli.CommandLine;
 
 class RuleopsExtensionProcessor {
 
@@ -26,16 +23,6 @@ class RuleopsExtensionProcessor {
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
-    }
-
-    @BuildStep
-    BeanDefiningAnnotationBuildItem commandBeanDefiningAnnotation() {
-        return new BeanDefiningAnnotationBuildItem(DotName.createSimple(CommandLine.Command.class.getName()));
-    }
-
-    @BuildStep
-    BeanDefiningAnnotationBuildItem topcommandAnnotation() {
-        return new BeanDefiningAnnotationBuildItem(DotName.createSimple(TopCommand.class.getName()));
     }
 
     @BuildStep
@@ -65,6 +52,5 @@ class RuleopsExtensionProcessor {
                             .build();
             classCreator.addAnnotation(annotation);
         }
-        ;
     }
 }
