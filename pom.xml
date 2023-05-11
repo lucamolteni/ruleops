@@ -63,6 +63,7 @@
     <module>utils-drl2yaml</module>
     <module>ruleops-basic</module>
     <module>ruleops-core</module>
+    <module>ruleops-core-cli</module>
     <module>ruleops-cli-example</module>
     <module>ruleops-extension</module>
   </modules>
