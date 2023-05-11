@@ -21,7 +21,7 @@ public class RuleopsExtensionTest {
     @Test
     public void writeYourOwnUnitTest() throws ClassNotFoundException {
 
-        Instance<?> topCommand = CDI.current().select(Class.forName("org.drools.cliexample.TopCommand"));
+        Instance<?> topCommand = CDI.current().select(Class.forName("org.drools.cliexample.ExampleTopCommand"));
         // Write your unit tests here - see the testing extension guide https://quarkus.io/guides/writing-extensions#testing-extensions for more information
         Assertions.assertNotNull(topCommand);
     }

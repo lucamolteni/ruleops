@@ -1,66 +1,82 @@
 package org.drools.ruleops.extension.deployment;
 
+import java.io.PrintWriter;
+
 import javax.inject.Inject;
 
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.GeneratedClassBuildItem;
-import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.picocli.runtime.annotations.TopCommand;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
+import picocli.CommandLine;
 
 class RuleopsExtensionProcessor {
 
     private static final String FEATURE = "ruleops-extension";
+    public final String TOP_COMMAND_NAME = "org.drools.cliexample.ExampleTopCommand";
 
     @Inject
     OutputTargetBuildItem outputTargetBuildItem;
 
     @BuildStep
     FeatureBuildItem feature() {
-        // parse kmodule.xml
-        // for each kbase, generate one command file
 
         return new FeatureBuildItem(FEATURE);
     }
 
     @BuildStep
-    protected void build(BuildProducer<GeneratedClassBuildItem> generatedBean,
-                         BuildProducer<GeneratedResourceBuildItem> generatedResourceBuildItemBuildProducer) {
+    BeanDefiningAnnotationBuildItem commandBeanDefiningAnnotation() {
+        return new BeanDefiningAnnotationBuildItem(DotName.createSimple(CommandLine.Command.class.getName()));
+    }
 
-        System.out.println("Generating Prova.class in " + outputTargetBuildItem.getOutputDirectory());
+    @BuildStep
+    BeanDefiningAnnotationBuildItem topcommandAnnotation() {
+        return new BeanDefiningAnnotationBuildItem(DotName.createSimple(TopCommand.class.getName()));
+    }
+
+    @BuildStep
+    protected void build(
+            CombinedIndexBuildItem combinedIndexBuildItemConsumer,
+            BuildProducer<GeneratedBeanBuildItem> generatedBean,
+                         BuildProducer<AdditionalBeanBuildItem> additionalBean) {
+
+        System.out.println("++++ Init: " + TOP_COMMAND_NAME);
 
         ClassOutput classOutput = (name, data) -> {
             System.out.println("Generating classoutput: " + name);
-            generatedBean.produce(new GeneratedClassBuildItem(true, name, data));
+            generatedBean.produce(new GeneratedBeanBuildItem(name, data));
+//            additionalBean.produce(new AdditionalBeanBuildItem(name)); this doesn't work as it tries to index it
         };
 
         ClassCreator classCreator = ClassCreator.builder()
                 .classOutput(classOutput)
-                .className("org.drools.cliexample.TopCommand")
+                .className(TOP_COMMAND_NAME)
+                .interfaces(Runnable.class)
                 .build();
+
+        classCreator.getMethodCreator("run", "void").returnVoid();
 
         classCreator.addAnnotation(io.quarkus.picocli.runtime.annotations.TopCommand.class);
 
+        AnnotationInstance annotation =
+                AnnotationInstance.builder(DotName.createSimple(picocli.CommandLine.Command.class))
+                        .add("mixinStandardHelpOptions", true)
 
-
-            AnnotationInstance annotation =
-                    AnnotationInstance.builder(DotName.createSimple(picocli.CommandLine.Command.class))
-                            .add("mixinStandardHelpOptions", true)
-//                            .add("subcommands", new Class[]{
-//                                    Class.forName("FindNamespaceCommand.class"),
-//                                    Class.forName("FindPodCommand.class")
-//                            })
-                            .build();
-            classCreator.addAnnotation(annotation);
-
-
+                        .build();
+        classCreator.addAnnotation(annotation);
 
         classCreator.close();
-    }
 
+    }
 }
