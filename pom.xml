@@ -83,11 +83,6 @@
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-drl-quarkus</artifactId>
-      <version>${version.drools}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-commands</artifactId>
       <version>${version.drools}</version>
     </dependency>
