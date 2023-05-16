@@ -23,8 +23,17 @@
       <artifactId>quarkus-picocli-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-kubernetes-client-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>ruleops-extension</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools.ruleops</groupId>
+      <artifactId>ruleops-core-cli</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

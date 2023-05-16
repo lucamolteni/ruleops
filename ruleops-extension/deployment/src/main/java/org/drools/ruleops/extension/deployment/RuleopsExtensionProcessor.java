@@ -11,6 +11,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
+import org.drools.ruleops.cli.DroolsPicoCLICommand;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -45,6 +46,7 @@ class RuleopsExtensionProcessor {
         try (ClassCreator classCreator = ClassCreator.builder()
                 .classOutput(classOutput)
                 .className(COMMAND_1_NAME)
+                .superClass(DroolsPicoCLICommand.class)
                 .build()) {
 
             AnnotationInstance parameterAnnotation =
