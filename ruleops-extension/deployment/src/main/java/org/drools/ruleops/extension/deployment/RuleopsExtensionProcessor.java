@@ -11,15 +11,17 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
+import org.drools.ruleops.cli.DroolsPicoCLICommand;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
+import picocli.CommandLine;
 
 class RuleopsExtensionProcessor {
 
     private static final String FEATURE = "ruleops-extension";
     public static final String TOP_COMMAND_NAME = "org.drools.cliexample.ExampleTopCommand";
-    public static final String COMMAND_1_NAME = "org.drools.cliexample.Command1";
+    public static final String COMMAND_1_NAME = "org.drools.cliexample.FindPodCommand";
 
     @Inject
     OutputTargetBuildItem outputTargetBuildItem;
@@ -44,14 +46,23 @@ class RuleopsExtensionProcessor {
         try (ClassCreator classCreator = ClassCreator.builder()
                 .classOutput(classOutput)
                 .className(COMMAND_1_NAME)
-                .interfaces(Runnable.class)
+                .superClass(DroolsPicoCLICommand.class)
                 .build()) {
+
+            AnnotationInstance parameterAnnotation =
+                    AnnotationInstance.builder(DotName.createSimple(picocli.CommandLine.Parameters.class))
+                            .add("index", 0)
+                            .build();
+
+            classCreator.getFieldCreator("name", String.class)
+                    .addAnnotation(CommandLine.Parameters.class);
+
 
             classCreator.getMethodCreator("run", "void").returnVoid();
 
             AnnotationInstance annotation =
                     AnnotationInstance.builder(DotName.createSimple(picocli.CommandLine.Command.class))
-                            .add("name", "commandname")
+                            .add("name", "pod")
                             .build();
             classCreator.addAnnotation(annotation);
         }
