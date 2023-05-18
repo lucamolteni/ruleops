@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
@@ -31,10 +32,14 @@ public class LevelTrigger {
 
     void onStart(@Observes StartupEvent ev) {
         LOG.info("The application is starting...");
-        for (var d : client.apps().statefulSets().list().getItems()) {
-            if (LOG.isDebugEnabled()) {
-                Utils.debugYaml(d);
+        try {
+            for (var d : client.apps().statefulSets().list().getItems()) {
+                if (LOG.isDebugEnabled()) {
+                    Utils.debugYaml(d);
+                }
             }
+        } catch (KubernetesClientException e) {
+            LOG.error("Cannot connect to Kubernetes at startup");
         }
     }
 

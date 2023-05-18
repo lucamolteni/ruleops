@@ -19,6 +19,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drl-quarkus</artifactId>
+      <version>8.35.0.Final</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.drools.ruleops</groupId>
       <artifactId>ruleops-core-cli</artifactId>
       <version>${project.version}</version>

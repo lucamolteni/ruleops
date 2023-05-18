@@ -1,0 +1,16 @@
+package rules.examplerules.findpod;
+
+import java.util.Map;
+
+import org.drools.ruleops.model.Advice;
+import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.Pod;
+
+global java.lang.String arg0;
+
+rule "Find pod with name arg0"
+when
+  $pod : Pod( $name : metadata.name == arg0)
+then
+  insert(new Advice("Pod found: %s".formatted($name), ""));
+end

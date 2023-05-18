@@ -1,5 +1,6 @@
 package org.drools.ruleops.extension.deployment;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -11,11 +12,14 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
+import io.quarkus.gizmo.MethodCreator;
+import io.quarkus.gizmo.MethodDescriptor;
+import org.drools.ruleops.LevelTrigger;
 import org.drools.ruleops.cli.DroolsPicoCLICommand;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
-import picocli.CommandLine;
+import org.kie.api.runtime.KieRuntimeBuilder;
 
 class RuleopsExtensionProcessor {
 
@@ -42,7 +46,6 @@ class RuleopsExtensionProcessor {
             generatedBean.produce(new GeneratedBeanBuildItem(name, data));
         };
 
-
         try (ClassCreator classCreator = ClassCreator.builder()
                 .classOutput(classOutput)
                 .className(COMMAND_1_NAME)
@@ -55,8 +58,14 @@ class RuleopsExtensionProcessor {
                             .build();
 
             classCreator.getFieldCreator("name", String.class)
-                    .addAnnotation(CommandLine.Parameters.class);
+                    .addAnnotation(parameterAnnotation);
 
+            try (MethodCreator ctor = classCreator.getMethodCreator("<init>", void.class, LevelTrigger.class, KieRuntimeBuilder.class)) {
+                ctor.setModifiers(Modifier.PUBLIC);
+                ctor.invokeSpecialMethod(MethodDescriptor.ofConstructor(Object.class), ctor.getThis());
+                ctor.returnValue(null);
+                ctor.addAnnotation(Inject.class);
+            }
 
             classCreator.getMethodCreator("run", "void").returnVoid();
 
@@ -79,11 +88,10 @@ class RuleopsExtensionProcessor {
                                                         DotName.createSimple(""),
                                                         (short) 0, empty, new HashMap<>(), true);
 
-
             AnnotationInstance annotation =
                     AnnotationInstance.builder(DotName.createSimple(picocli.CommandLine.Command.class))
                             .add("mixinStandardHelpOptions", true)
-                            .add("subcommands", new ClassInfo[]{ subCommandName })
+                            .add("subcommands", new ClassInfo[]{subCommandName})
                             .build();
             classCreator.addAnnotation(annotation);
         }
